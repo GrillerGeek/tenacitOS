@@ -31,6 +31,7 @@ export async function POST(request: NextRequest) {
     const output = execSync(`openclaw cron run ${id} --force 2>&1`, {
       timeout: 15000,
       encoding: "utf-8",
+      env: { ...process.env, PATH: `/home/jasonrobey/.npm-global/bin:${process.env.PATH}` },
     });
 
     // Create success notification

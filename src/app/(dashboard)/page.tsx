@@ -48,15 +48,20 @@ export default function DashboardPage() {
 
   useEffect(() => {
     Promise.all([
-      fetch("/api/activities/stats").then(r => r.json()),
+      fetch("/api/sessions").then(r => r.json()),
       fetch("/api/agents").then(r => r.json()),
-    ]).then(([actStats, agentsData]) => {
+      fetch("/api/cron").then(r => r.json()),
+    ]).then(([sessionsData, agentsData, cronData]) => {
+      const sessions = sessionsData.sessions || [];
+      const today = new Date().toDateString();
+      const todaySessions = sessions.filter((s: any) => new Date(s.updatedAt).toDateString() === today);
+      const cronJobs = cronData.jobs || [];
       setStats({
-        total: actStats.total || 0,
-        today: actStats.today || 0,
-        success: actStats.byStatus?.success || 0,
-        error: actStats.byStatus?.error || 0,
-        byType: actStats.byType || {},
+        total: sessions.length,
+        today: todaySessions.length,
+        success: cronJobs.filter((j: any) => j.enabled).length,
+        error: cronJobs.filter((j: any) => !j.enabled).length,
+        byType: { sessions: sessions.length, cron: cronJobs.length },
       });
       setAgents(agentsData.agents || []);
     }).catch(console.error);
@@ -74,10 +79,10 @@ export default function DashboardPage() {
             letterSpacing: '-1.5px'
           }}
         >
-          🦞 Mission Control
+          🏐 Wilson Command Center
         </h1>
         <p style={{ color: 'var(--text-secondary)', fontSize: '14px' }}>
-          Overview of Tenacitas agent activity
+          Wilson Command Center — New Richmond, OH
         </p>
       </div>
 
@@ -86,25 +91,25 @@ export default function DashboardPage() {
         {/* Stats */}
         <div className="lg:col-span-3 grid grid-cols-2 md:grid-cols-4 gap-3">
           <StatsCard
-            title="Total Activities"
+            title="Total Sessions"
             value={stats.total.toLocaleString()}
             icon={<Activity className="w-5 h-5" />}
             iconColor="var(--info)"
           />
           <StatsCard
-            title="Today"
+            title="Sessions Today"
             value={stats.today.toLocaleString()}
             icon={<Zap className="w-5 h-5" />}
             iconColor="var(--accent)"
           />
           <StatsCard
-            title="Successful"
+            title="Active Crons"
             value={stats.success.toLocaleString()}
             icon={<CheckCircle className="w-5 h-5" />}
             iconColor="var(--success)"
           />
           <StatsCard
-            title="Errors"
+            title="Paused Crons"
             value={stats.error.toLocaleString()}
             icon={<XCircle className="w-5 h-5" />}
             iconColor="var(--error)"

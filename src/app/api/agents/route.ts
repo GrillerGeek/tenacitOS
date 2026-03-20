@@ -61,8 +61,25 @@ export async function GET() {
     const configPath = (process.env.OPENCLAW_DIR || "/root/.openclaw") + "/openclaw.json";
     const config = JSON.parse(readFileSync(configPath, "utf-8"));
 
-    // Get agents from config
-    const agents: Agent[] = config.agents.list.map((agent: any) => {
+    // Get agents from config — OpenClaw single-agent config uses agents.defaults, not agents.list
+    // Build agent list from the agents directory on disk
+    const { readdirSync, statSync } = require("fs");
+    const agentsDir = (process.env.OPENCLAW_DIR || "/root/.openclaw") + "/agents";
+    let agentIds: string[] = [];
+    try {
+      agentIds = readdirSync(agentsDir).filter((id: string) => {
+        try { return statSync(`${agentsDir}/${id}`).isDirectory(); } catch { return false; }
+      });
+    } catch { agentIds = ["main"]; }
+
+    const agentDefaults = config.agents?.defaults || {};
+    const rawAgentList = agentIds.map((id: string) => ({
+      id,
+      workspace: agentDefaults.workspace || `/root/.openclaw/workspace`,
+      model: agentDefaults.model,
+    }));
+
+    const agents: Agent[] = rawAgentList.map((agent: any) => {
       const agentInfo = getAgentDisplayInfo(agent.id, agent);
 
       // Get telegram account info

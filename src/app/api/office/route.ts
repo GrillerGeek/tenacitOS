@@ -189,11 +189,23 @@ export async function GET() {
     // Try gateway first, fallback to file-based
     const gatewayStatus = await getAgentStatusFromGateway();
 
-    const agents = config.agents.list.map((agent: any) => {
-      const agentInfo = AGENT_CONFIG[agent.id as keyof typeof AGENT_CONFIG] || {
+    // Discover agents from filesystem (single or multi-agent config)
+    const agentDefaults = config.agents?.defaults || {};
+    const { readdirSync: rds, statSync: sts } = require("fs");
+    const agentsDir = (process.env.OPENCLAW_DIR || "/root/.openclaw") + "/agents";
+    let agentIds: string[] = [];
+    try { agentIds = rds(agentsDir).filter((id: string) => { try { return sts(`${agentsDir}/${id}`).isDirectory(); } catch { return false; } }); } catch { agentIds = ["main"]; }
+    const rawAgentList = agentIds.map((id: string) => ({ id, workspace: agentDefaults.workspace || `/root/.openclaw/workspace` }));
+
+    const WILSON_CONFIG: Record<string, {emoji: string; color: string; name: string; role: string}> = {
+      main: { emoji: "🏐", color: "#3b82f6", name: "Wilson", role: "AI Assistant" },
+    };
+
+    const agents = rawAgentList.map((agent: any) => {
+      const agentInfo = WILSON_CONFIG[agent.id] || AGENT_CONFIG[agent.id as keyof typeof AGENT_CONFIG] || {
         emoji: "🤖",
         color: "#666",
-        name: agent.name || agent.id,
+        name: agent.id,
         role: "Agent",
       };
 

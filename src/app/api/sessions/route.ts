@@ -118,9 +118,10 @@ export async function GET(request: NextRequest) {
 
 async function listSessions(): Promise<NextResponse> {
   try {
-    const output = execSync('openclaw sessions list --json 2>/dev/null', {
+    const output = execSync('openclaw sessions --json 2>/dev/null', {
       timeout: 10000,
       encoding: 'utf-8',
+      env: { ...process.env, PATH: `/home/jasonrobey/.npm-global/bin:${process.env.PATH}` },
     });
 
     const data = JSON.parse(output);

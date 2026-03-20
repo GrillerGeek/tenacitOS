@@ -40,7 +40,7 @@ export interface UsageSnapshot {
  */
 export async function getOpenClawStatus(): Promise<any> {
   try {
-    const { stdout } = await execAsync("openclaw status --json");
+    const { stdout } = await execAsync("openclaw status --json", { env: { ...process.env, PATH: `/home/jasonrobey/.npm-global/bin:${process.env.PATH}` } });
     return JSON.parse(stdout);
   } catch (error) {
     console.error("Error getting OpenClaw status:", error);

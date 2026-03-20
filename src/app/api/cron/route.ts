@@ -20,6 +20,7 @@ export async function GET() {
     const output = execSync("openclaw cron list --json --all 2>/dev/null", {
       timeout: 10000,
       encoding: "utf-8",
+      env: { ...process.env, PATH: `/home/jasonrobey/.npm-global/bin:${process.env.PATH}` },
     });
 
     const data = JSON.parse(output);
@@ -102,7 +103,7 @@ export async function PUT(request: NextRequest) {
     // Use openclaw CLI to update the job
     const output = execSync(
       `openclaw cron ${action} ${id} --json 2>/dev/null || openclaw cron update ${id} --enabled=${enabled} --json 2>/dev/null`,
-      { timeout: 10000, encoding: "utf-8" }
+      { timeout: 10000, encoding: "utf-8", env: { ...process.env, PATH: `/home/jasonrobey/.npm-global/bin:${process.env.PATH}` }, }
     );
 
     return NextResponse.json({ success: true, id, enabled });
@@ -128,6 +129,7 @@ export async function DELETE(request: NextRequest) {
     execSync(`openclaw cron remove ${id} 2>/dev/null`, {
       timeout: 10000,
       encoding: "utf-8",
+      env: { ...process.env, PATH: `/home/jasonrobey/.npm-global/bin:${process.env.PATH}` }, 
     });
 
     return NextResponse.json({ success: true, deleted: id });
