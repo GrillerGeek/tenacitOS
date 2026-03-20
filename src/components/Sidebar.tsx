@@ -28,6 +28,8 @@ import {
   GitFork,
   SquareTerminal,
   History,
+  Package,
+  House,
 } from "lucide-react";
 import { getAgentDisplayName } from "@/config/branding";
 
@@ -50,6 +52,8 @@ const navItems = [
   { href: "/analytics", label: "Analytics", icon: BarChart3 },
   { href: "/reports", label: "Reports", icon: FileBarChart },
   { href: "/skills", label: "Skills", icon: Puzzle },
+  { href: "/inventory", label: "Inventory", icon: Package },
+  { href: "/ha-health", label: "HA Health", icon: House },
   { href: "/about", label: getAgentDisplayName(), icon: User },
 ];
 
