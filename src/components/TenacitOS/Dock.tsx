@@ -17,6 +17,8 @@ import {
   DollarSign,
   Settings,
   History,
+  PenLine,
+  Lightbulb,
 } from "lucide-react";
 
 const dockItems = [
@@ -31,6 +33,8 @@ const dockItems = [
   { href: "/sessions", label: "Sessions", icon: History },
   { href: "/skills", label: "Skills", icon: Puzzle },
   { href: "/costs", label: "Costs & Analytics", icon: DollarSign },
+  { href: "/content-engine", label: "Content Engine", icon: PenLine },
+  { href: "/idea-engine", label: "Idea Engine", icon: Lightbulb },
   { href: "/inventory", label: "Inventory", icon: Package },
   { href: "/ha-health", label: "HA Health", icon: House },
   { href: "/settings", label: "Settings", icon: Settings },
