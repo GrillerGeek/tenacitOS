@@ -3,6 +3,8 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
+  Package,
+  House,
   Home,
   Monitor,
   FolderOpen,
@@ -29,6 +31,8 @@ const dockItems = [
   { href: "/sessions", label: "Sessions", icon: History },
   { href: "/skills", label: "Skills", icon: Puzzle },
   { href: "/costs", label: "Costs & Analytics", icon: DollarSign },
+  { href: "/inventory", label: "Inventory", icon: Package },
+  { href: "/ha-health", label: "HA Health", icon: House },
   { href: "/settings", label: "Settings", icon: Settings },
 ];
 
